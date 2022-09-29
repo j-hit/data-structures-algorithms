@@ -42,143 +42,63 @@
  * board[i][j] is a digit 1-9 or '.'.
  */
 
-const cellsToSubBoxesMap = new Map([
-  [`00`, 0],
-  [`01`, 0],
-  [`02`, 0],
-  [`03`, 1],
-  [`04`, 1],
-  [`05`, 1],
-  [`06`, 2],
-  [`07`, 2],
-  [`08`, 2],
-  [`10`, 0],
-  [`11`, 0],
-  [`12`, 0],
-  [`13`, 1],
-  [`14`, 1],
-  [`15`, 1],
-  [`16`, 2],
-  [`17`, 2],
-  [`18`, 2],
-  [`20`, 0],
-  [`21`, 0],
-  [`22`, 0],
-  [`23`, 1],
-  [`24`, 1],
-  [`25`, 1],
-  [`26`, 2],
-  [`27`, 2],
-  [`28`, 2],
-  [`30`, 3],
-  [`31`, 3],
-  [`32`, 3],
-  [`33`, 4],
-  [`34`, 4],
-  [`35`, 4],
-  [`36`, 5],
-  [`37`, 5],
-  [`38`, 5],
-  [`40`, 3],
-  [`41`, 3],
-  [`42`, 3],
-  [`43`, 4],
-  [`44`, 4],
-  [`45`, 4],
-  [`46`, 5],
-  [`47`, 5],
-  [`48`, 5],
-  [`50`, 3],
-  [`51`, 3],
-  [`52`, 3],
-  [`53`, 4],
-  [`54`, 4],
-  [`55`, 4],
-  [`56`, 5],
-  [`57`, 5],
-  [`58`, 5],
-  [`60`, 6],
-  [`61`, 6],
-  [`62`, 6],
-  [`63`, 7],
-  [`64`, 7],
-  [`65`, 7],
-  [`66`, 8],
-  [`67`, 8],
-  [`68`, 8],
-  [`70`, 6],
-  [`71`, 6],
-  [`72`, 6],
-  [`73`, 7],
-  [`74`, 7],
-  [`75`, 7],
-  [`76`, 8],
-  [`77`, 8],
-  [`78`, 8],
-  [`80`, 6],
-  [`81`, 6],
-  [`82`, 6],
-  [`83`, 7],
-  [`84`, 7],
-  [`85`, 7],
-  [`86`, 8],
-  [`87`, 8],
-  [`88`, 8],
-]);
-
-const createDimensionMap = () =>
-  new Map([
-    [0, new Set<string>()],
-    [1, new Set<string>()],
-    [2, new Set<string>()],
-    [3, new Set<string>()],
-    [4, new Set<string>()],
-    [5, new Set<string>()],
-    [6, new Set<string>()],
-    [7, new Set<string>()],
-    [8, new Set<string>()],
-  ]);
-
 /**
- * Hardcoded subboxes with a Set for each box, column and row
- * Time O(N) | Space O(rows) + O(columns) + O(boxes) = O(N)
+ * Two loops with 3 sets, calculating the subbox with math
+ * Time ? | Space ?
  */
 function isValidSudoku(board: string[][]): boolean {
-  const columnNumberMap = createDimensionMap();
-  const subBoxNumberMap = createDimensionMap();
+  const columns = new Map<number, Set<string>>();
+  const rows = new Map<number, Set<string>>();
+  const subBoxes = new Map<string, Set<string>>();
 
   for (let rowIndex = 0; rowIndex < board.length; rowIndex++) {
-    const rowSet = new Set();
-    const row = board[rowIndex];
-
+    let row = board[rowIndex];
     for (let columnIndex = 0; columnIndex < row.length; columnIndex++) {
-      const cellValue = row[columnIndex];
-      if (cellValue !== '.') {
-        if (rowSet.has(cellValue)) {
+      let cell = row[columnIndex];
+      if (cell !== '.') {
+        let subBoxKey = getSubBoxKey(rowIndex, columnIndex);
+        if (
+          isInRow(rows, rowIndex, cell) ||
+          isInColumn(columns, columnIndex, cell) ||
+          isInSubBox(subBoxes, subBoxKey, cell)
+        ) {
           return false;
-        } else {
-          rowSet.add(cellValue);
         }
-
-        const columnSet = columnNumberMap.get(columnIndex);
-        if (columnSet?.has(cellValue)) {
-          return false;
-        } else {
-          columnSet?.add(cellValue);
-        }
-
-        const subboxNumber = cellsToSubBoxesMap.get(
-          `${rowIndex}${columnIndex}`
-        );
-        const subboxSet = subBoxNumberMap.get(subboxNumber ?? -1);
-        if (subboxSet?.has(cellValue)) {
-          return false;
-        } else {
-          subboxSet?.add(cellValue);
-        }
+        keepTrackOfNumber(rows, rowIndex, cell);
+        keepTrackOfNumber(columns, columnIndex, cell);
+        keepTrackOfNumber(subBoxes, subBoxKey, cell);
       }
     }
   }
 
   return true;
 }
+
+const keepTrackOfNumber = (
+  mapToStoreValue: Map<unknown, Set<string>>,
+  key: unknown,
+  valueToAdd: string
+): void => {
+  const values = mapToStoreValue.get(key) ?? new Set();
+  values.add(valueToAdd);
+  mapToStoreValue.set(key, values);
+};
+
+const getSubBoxKey = (rowIndex: number, columnIndex: number) =>
+  `${Math.floor(rowIndex / 3)}, ${Math.floor(columnIndex / 3)}`;
+
+const isInRow = (
+  rows: Map<number, Set<string>>,
+  rowIndex: number,
+  cell: string
+) => rows.get(rowIndex)?.has(cell);
+const isInColumn = (
+  columns: Map<number, Set<string>>,
+  columnIndex: number,
+  cell: string
+) => columns.get(columnIndex)?.has(cell);
+const isInSubBox = (
+  subBox: Map<string, Set<string>>,
+  subBoxKey: string,
+  cell: string
+) => subBox.get(subBoxKey)?.has(cell);
