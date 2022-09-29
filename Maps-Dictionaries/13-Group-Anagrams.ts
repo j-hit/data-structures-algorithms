@@ -36,7 +36,9 @@ function groupAnagrams(strs: string[]): string[][] {
 
   /* Time O(N) */
   for (const word of strs) {
-    const rearrangedLetters = [...word].sort().join('');
+    const rearrangedLetters = [...word]
+      .sort()
+      .join(''); /* Time O(N Log(N)) | Space O(Log (N)) */
     if (anagramMap.has(rearrangedLetters)) {
       const existingAnagramWords = anagramMap.get(rearrangedLetters);
       /* Space O(N) */
