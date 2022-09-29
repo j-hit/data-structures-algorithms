@@ -44,7 +44,7 @@
 
 /**
  * Two loops with 3 sets, calculating the subbox with math
- * Time ? | Space ?
+ * Time O(9^2) | Space O(9 * 9 * 9) ?
  */
 function isValidSudoku(board: string[][]): boolean {
   const columns = new Map<number, Set<string>>();
