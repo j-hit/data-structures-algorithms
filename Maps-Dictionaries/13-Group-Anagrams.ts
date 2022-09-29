@@ -34,17 +34,21 @@ function groupAnagrams(strs: string[]): string[][] {
 
   const anagramMap = new Map();
 
-  /* Time O(N) */
+  /* Time O(N * C Log(C)) | Space O(N * C) */
+  /* = Time O(N * 100 Log(100)) | Space O(N * 100) */
+  /* = Time O(N) | Space O(N) */
   for (const word of strs) {
     const rearrangedLetters = [...word]
       .sort()
-      .join(''); /* Time O(N Log(N)) | Space O(Log (N)) */
+      .join(
+        ''
+      ); /* Time O(100 Log(100)) | Space O(100) */ /* MergeSort if self implemented */
     if (anagramMap.has(rearrangedLetters)) {
       const existingAnagramWords = anagramMap.get(rearrangedLetters);
-      /* Space O(N) */
+      /* Time O(1) | Space O(1) */
       anagramMap.set(rearrangedLetters, [...existingAnagramWords, word]);
     } else {
-      /* Space O(N) */
+      /* Time O(1) | Space O(1) */
       anagramMap.set(rearrangedLetters, [word]);
     }
   }

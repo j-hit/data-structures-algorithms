@@ -20,17 +20,21 @@
 
 /**
  * HashSet with single loop
- * Time O(stones) = O(M) | Space O(jewels) = O(N)
+ * N = number of unique jewels, M = stones
+ * Time O(N + M) | Space O(N)
  */
 function numJewelsInStones(jewels: string, stones: string): number {
   let jewelsCount = 0;
 
-  const jewelsSet = new Set([...jewels]); /* Space O(jewels) = O(N) */
+  const jewelsSet = new Set([
+    ...jewels,
+  ]); /* Time O(N) | Space O(jewels) = O(N) */
 
   /* Time O(stones) = O(M) */
   for (let stone of stones) {
+    /* Time O(1) */
     if (jewelsSet.has(stone)) {
-      jewelsCount++;
+      jewelsCount++; /* Time O(1) */
     }
   }
 
