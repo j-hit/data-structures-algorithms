@@ -33,17 +33,18 @@ export function routeBetweenNodeExists(
     return false;
   }
 
-  startingNode.visited = true;
-  let pathExists = false;
   if (startingNode.value === targetNode.value) {
-    pathExists = true;
-  } else {
-    for (let childNode of startingNode.children) {
-      pathExists ||= routeBetweenNodeExists(childNode, targetNode);
+    return true;
+  }
+
+  startingNode.visited = true;
+  for (let childNode of startingNode.children) {
+    if (routeBetweenNodeExists(childNode, targetNode) === true) {
+      return true;
     }
   }
 
-  return pathExists;
+  return false;
 }
 
 // Test case
