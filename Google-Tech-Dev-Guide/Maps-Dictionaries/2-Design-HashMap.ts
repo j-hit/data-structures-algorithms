@@ -42,7 +42,7 @@ class MyHashMap {
     this.hashMap = {};
   }
 
-  getHash = (key) => 'A' + key;
+  getHash = (key: number) => 'A' + key;
 
   put(key: number, value: number): void {
     const hash = this.getHash(key);

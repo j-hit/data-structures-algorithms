@@ -41,7 +41,7 @@ class MyHashSet {
     this.uniqueNumbers = {};
   }
 
-  getHash = (key) => 'A' + key;
+  getHash = (key: number) => 'A' + key;
 
   add = (key: number): void => {
     const hash = this.getHash(key);
