@@ -1,4 +1,4 @@
-// https://structy.net/problems/island-count
+// https://structy.net/problems/minimum-island
 
 type IslandGrid = string[][];
 
@@ -11,20 +11,20 @@ const grid: IslandGrid = [
   ['L', 'L', 'W', 'W', 'W'],
 ];
 
-export const islandCount = (grid: IslandGrid) => {
-  const vistedCells = new Set<string>();
-  let numberOfIslands = 0;
+export const minimumIsland = (grid: IslandGrid) => {
+  const visitedSet = new Set<string>();
+  let minimumSize = Infinity;
 
-  // Time O(row * column)
-  for (let row = 0; grid.length; row++) {
-    for (let column = 0; grid[0].length; column++) {
-      if (explore(grid, row, column, vistedCells)) {
-        numberOfIslands += 1;
+  for (let row = 0; row < grid.length; row++) {
+    for (let column = 0; column < grid[row].length; column++) {
+      const size = exploreSize(grid, row, column, visitedSet);
+      if (size > 0 && size < minimumSize) {
+        minimumSize = size;
       }
     }
   }
 
-  return numberOfIslands;
+  return minimumSize;
 };
 
 const cellIsWater = (grid: IslandGrid, row: number, column: number) =>
@@ -36,40 +36,41 @@ const cellIsOutOfBounds = (grid: IslandGrid, row: number, column: number) => {
   return !rowIsInBounds || !columnIsInBounds;
 };
 
-const explore = (
+const exploreSize = (
   grid: IslandGrid,
   row: number,
   column: number,
   visitedCells: Set<string>
-): boolean => {
+): number => {
   if (cellIsOutOfBounds(grid, row, column)) {
-    return false;
+    return 0;
   }
 
   if (cellIsWater(grid, row, column)) {
-    return false;
+    return 0;
   }
 
   const cellPosition = `${row}, ${column}`;
   if (visitedCells.has(cellPosition)) {
-    return false;
+    return 0;
   }
   visitedCells.add(cellPosition);
 
+  let islandSize = 1;
+
   const oneRowUp = row - 1;
-  explore(grid, oneRowUp, column, visitedCells);
+  islandSize += exploreSize(grid, oneRowUp, column, visitedCells);
 
   const oneRowDown = row + 1;
-  explore(grid, oneRowDown, column, visitedCells);
+  islandSize += exploreSize(grid, oneRowDown, column, visitedCells);
 
   const oneColumnLeft = column - 1;
-  explore(grid, row, oneColumnLeft, visitedCells);
+  islandSize += exploreSize(grid, row, oneColumnLeft, visitedCells);
 
   const oneColumnRight = column + 1;
-  explore(grid, row, oneColumnRight, visitedCells);
+  islandSize += exploreSize(grid, row, oneColumnRight, visitedCells);
 
-  return true;
+  return islandSize;
 };
 
-console.log('running');
-console.log(islandCount(grid)); // -> 3
+console.log(minimumIsland(grid)); // -> 2
