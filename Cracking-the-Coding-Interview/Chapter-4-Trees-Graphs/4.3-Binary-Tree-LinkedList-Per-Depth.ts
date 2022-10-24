@@ -51,7 +51,7 @@ class BinaryTree<T> {
 
 type BinaryTreeDepth = number;
 
-const createLinkedListPerDepth = <T>(
+export const createLinkedListPerDepth = <T>(
   binaryTree: BinaryTree<T>
 ): Map<BinaryTreeDepth, LinkedList<T>> => {
   const depthLinkedLists = new Map<BinaryTreeDepth, LinkedList<T>>();
