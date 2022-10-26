@@ -105,3 +105,4 @@ dist
 
 # Javascript output files
 *.js
+*.js.map
