@@ -6,5 +6,5 @@ Mainly going through the data structure and algorithm questions found on the [Go
 
 ## Useful links
 
-[Graph Algorithms video](https://www.youtube.com/watch?v=tWVWeAqZ0WU)
-[Binary Tree Algorithms video](https://www.youtube.com/watch?v=fAAZixBzIAI)
+- [Graph Algorithms video](https://www.youtube.com/watch?v=tWVWeAqZ0WU)
+- [Binary Tree Algorithms video](https://www.youtube.com/watch?v=fAAZixBzIAI)

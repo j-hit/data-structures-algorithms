@@ -97,23 +97,19 @@ const modifyImageWithDepthFirstSearch = (
 
 type CellIndex = number[];
 const getLeftNeighbour = (cellIndex: CellIndex): CellIndex => {
-  const row = cellIndex[0];
-  const column = cellIndex[1];
+  const [row, column] = cellIndex;
   return [row, column - 1];
 };
 const getRightNeighbour = (cellIndex: CellIndex): CellIndex => {
-  const row = cellIndex[0];
-  const column = cellIndex[1];
+  const [row, column] = cellIndex;
   return [row, column + 1];
 };
 const getTopNeighbour = (cellIndex: CellIndex): CellIndex => {
-  const row = cellIndex[0];
-  const column = cellIndex[1];
+  const [row, column] = cellIndex;
   return [row - 1, column];
 };
 const getBottomNeighbour = (cellIndex: CellIndex): CellIndex => {
-  const row = cellIndex[0];
-  const column = cellIndex[1];
+  const [row, column] = cellIndex;
   return [row + 1, column];
 };
 const convertCellToString = (cell: CellIndex) => `${cell[0]}, ${cell[1]}`;
