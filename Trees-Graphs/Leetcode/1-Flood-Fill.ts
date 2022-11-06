@@ -16,6 +16,9 @@
   0 <= sr < m
   0 <= sc < n
  */
+
+// Solution with depth first search
+
 export function floodFill(
   image: number[][],
   sr: number,
@@ -25,16 +28,32 @@ export function floodFill(
   const colorToReplace = image[sr][sc];
   const visitedSet = new Set<string>();
 
-  modifyImageWithDepthFirstSearch(
-    image,
-    [sr, sc],
-    colorToReplace,
-    color,
-    visitedSet
-  );
+  visitCell(image, [sr, sc], colorToReplace, color, visitedSet);
 
   return image;
 }
+
+const visitCell = (
+  image: number[][],
+  cellIndex: CellIndex,
+  oldColor: number,
+  newColor: number,
+  visitedSet: Set<string>
+) => {
+  if (shouldNotVisit(image, cellIndex, oldColor, visitedSet)) {
+    return;
+  }
+
+  const [row, column] = cellIndex;
+  visitedSet.add(hashCellIndex(cellIndex));
+  image[row][column] = newColor;
+
+  for (let neighborOffset of offsetsToNeighbors()) {
+    const [rowOffset, columnOffset] = neighborOffset;
+    const neighborCell = [row + rowOffset, column + columnOffset];
+    visitCell(image, neighborCell, oldColor, newColor, visitedSet);
+  }
+};
 
 const shouldNotVisit = (
   image: number[][],
@@ -62,68 +81,14 @@ const shouldNotVisit = (
   return false;
 };
 
-const modifyImageWithDepthFirstSearch = (
-  image: number[][],
-  cellIndex: CellIndex,
-  oldColor: number,
-  newColor: number,
-  visitedSet: Set<string>
-) => {
-  if (shouldNotVisit(image, cellIndex, oldColor, visitedSet)) {
-    return;
-  }
-
-  const [row, column] = cellIndex;
-  visitedSet.add(hashCellIndex(cellIndex));
-  image[row][column] = newColor;
-
-  modifyImageWithDepthFirstSearch(
-    image,
-    getLeftNeighbour(cellIndex),
-    oldColor,
-    newColor,
-    visitedSet
-  );
-  modifyImageWithDepthFirstSearch(
-    image,
-    getRightNeighbour(cellIndex),
-    oldColor,
-    newColor,
-    visitedSet
-  );
-  modifyImageWithDepthFirstSearch(
-    image,
-    getTopNeighbour(cellIndex),
-    oldColor,
-    newColor,
-    visitedSet
-  );
-  modifyImageWithDepthFirstSearch(
-    image,
-    getBottomNeighbour(cellIndex),
-    oldColor,
-    newColor,
-    visitedSet
-  );
-};
+const offsetsToNeighbors = (): CellIndex[] => [
+  [-1, 0], // top
+  [0, 1], // right
+  [1, 0], // bottom
+  [0, -1], // left
+];
 
 type CellIndex = number[];
-const getLeftNeighbour = (cellIndex: CellIndex): CellIndex => {
-  const [row, column] = cellIndex;
-  return [row, column - 1];
-};
-const getRightNeighbour = (cellIndex: CellIndex): CellIndex => {
-  const [row, column] = cellIndex;
-  return [row, column + 1];
-};
-const getTopNeighbour = (cellIndex: CellIndex): CellIndex => {
-  const [row, column] = cellIndex;
-  return [row - 1, column];
-};
-const getBottomNeighbour = (cellIndex: CellIndex): CellIndex => {
-  const [row, column] = cellIndex;
-  return [row + 1, column];
-};
 const hashCellIndex = (cell: CellIndex) => `${cell[0]}, ${cell[1]}`;
 
 // Example 1
