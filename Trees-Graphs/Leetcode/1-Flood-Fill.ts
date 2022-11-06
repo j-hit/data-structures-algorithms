@@ -23,8 +23,8 @@ export function floodFill(
   color: number
 ): number[][] {
   const colorToReplace = image[sr][sc];
-
   const visitedSet = new Set<string>();
+
   modifyImageWithDepthFirstSearch(
     image,
     [sr, sc],
@@ -36,6 +36,32 @@ export function floodFill(
   return image;
 }
 
+const shouldNotVisit = (
+  image: number[][],
+  cellIndex: CellIndex,
+  oldColor: number,
+  visitedSet: Set<string>
+): boolean => {
+  const [row, column] = cellIndex;
+
+  if (row < 0 || column < 0) {
+    return true;
+  }
+
+  if (row >= image.length || column >= image[0].length) {
+    return true;
+  }
+
+  if (image[row][column] !== oldColor) {
+    return true;
+  }
+
+  if (visitedSet.has(hashCellIndex(cellIndex))) {
+    return true;
+  }
+  return false;
+};
+
 const modifyImageWithDepthFirstSearch = (
   image: number[][],
   cellIndex: CellIndex,
@@ -43,26 +69,12 @@ const modifyImageWithDepthFirstSearch = (
   newColor: number,
   visitedSet: Set<string>
 ) => {
+  if (shouldNotVisit(image, cellIndex, oldColor, visitedSet)) {
+    return;
+  }
+
   const [row, column] = cellIndex;
-
-  if (row < 0 || column < 0) {
-    return;
-  }
-
-  if (row >= image.length || column >= image[0].length) {
-    return;
-  }
-
-  if (visitedSet.has(convertCellToString(cellIndex))) {
-    return;
-  }
-
-  visitedSet.add(convertCellToString(cellIndex));
-
-  if (image[row][column] !== oldColor) {
-    return;
-  }
-
+  visitedSet.add(hashCellIndex(cellIndex));
   image[row][column] = newColor;
 
   modifyImageWithDepthFirstSearch(
@@ -112,7 +124,7 @@ const getBottomNeighbour = (cellIndex: CellIndex): CellIndex => {
   const [row, column] = cellIndex;
   return [row + 1, column];
 };
-const convertCellToString = (cell: CellIndex) => `${cell[0]}, ${cell[1]}`;
+const hashCellIndex = (cell: CellIndex) => `${cell[0]}, ${cell[1]}`;
 
 // Example 1
 const image = [
