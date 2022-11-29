@@ -104,6 +104,4 @@ dist
 .tern-port
 
 # Javascript output files
-*.js
-*.js.map
 output/
