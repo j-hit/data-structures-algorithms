@@ -45,4 +45,19 @@ function maxSubArray(nums: number[]): number {
   return largestSum;
 }
 
+// Based on https://www.youtube.com/watch?v=5WZl3MMT0Eg
+function maxSubArrayAlternativeSolution(nums: number[]): number {
+  let maxSubArray = nums[0];
+  let currentSum = 0;
+
+  for (let currentNumber of nums) {
+    if (currentSum < 0) {
+      currentSum = 0;
+    }
+    currentSum += currentNumber;
+    maxSubArray = Math.max(maxSubArray, currentSum);
+  }
+  return maxSubArray;
+}
+
 console.log(maxSubArray([-1, 1, 2, 1]));
