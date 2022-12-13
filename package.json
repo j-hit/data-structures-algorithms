@@ -1,0 +1,29 @@
+{
+  "name": "data-structures-algorithms",
+  "version": "1.0.0",
+  "description": "A repository to keep a hold of some of my solutions as I work my way through some questions",
+  "main": "",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/j-hit/data-structures-algorithms.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/j-hit/data-structures-algorithms/issues"
+  },
+  "homepage": "https://github.com/j-hit/data-structures-algorithms#readme",
+  "devDependencies": {
+    "husky": "^8.0.2",
+    "lint-staged": "^13.1.0",
+    "prettier": "2.8.1"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
+}
