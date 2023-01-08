@@ -39,11 +39,12 @@ export class TrieNode {
 export class Trie {
   public rootNode: TrieNode;
 
-  constructor() {
+  constructor(words: string[]) {
     this.rootNode = new TrieNode();
+    this.insertWords(words);
   }
 
-  insert(word: string): void {
+  private insertWord(word: string): void {
     let currentNode = this.rootNode;
 
     for (const character of word) {
@@ -54,69 +55,121 @@ export class Trie {
     }
     currentNode.isEndOfWord = true;
   }
+
+  insertWords(words: string[]): void {
+    for (const word of words) {
+      this.insertWord(word);
+    }
+  }
 }
 
 export class Cell {
-  constructor(private row: number, private column: number) {}
+  private readonly ROW_LENGTH: number;
+  private readonly COLUMN_LENGTH: number;
+
+  constructor(
+    private row: number,
+    private column: number,
+    private board: string[][]
+  ) {
+    this.ROW_LENGTH = board.length;
+    this.COLUMN_LENGTH = board[0].length;
+  }
+
+  public getValue(): string | undefined {
+    if (
+      this.row < 0 ||
+      this.column < 0 ||
+      this.row === this.ROW_LENGTH ||
+      this.column === this.COLUMN_LENGTH
+    ) {
+      return undefined;
+    }
+
+    return this.board[this.row][this.column];
+  }
+
+  public getNeighbours(): Cell[] {
+    return [
+      new Cell(this.row - 1, this.column, this.board),
+      new Cell(this.row + 1, this.column, this.board),
+      new Cell(this.row, this.column - 1, this.board),
+      new Cell(this.row, this.column + 1, this.board),
+    ];
+  }
 
   public getHash(): string {
     return `${this.row}-${this.column}`;
   }
 }
 
-function findWords(board: string[][], words: string[]): string[] {
-  const prefixTree = new Trie();
-  for (const word of words) {
-    prefixTree.insert(word);
+const shouldVisitCell = (
+  cell: Cell,
+  node: TrieNode,
+  visitedCellHashs: Set<string>
+): boolean => {
+  const character = cell.getValue();
+
+  if (!character) {
+    return false;
   }
+
+  if (visitedCellHashs.has(cell.getHash())) {
+    return false;
+  }
+
+  if (!node.children.has(character)) {
+    return false;
+  }
+
+  return true;
+};
+
+const depthFirstSearch = (
+  cell: Cell,
+  node: TrieNode,
+  word: string,
+  visitedCellHashs: Set<string>,
+  foundWords: Set<string>
+): void => {
+  if (!shouldVisitCell(cell, node, visitedCellHashs)) {
+    return;
+  }
+
+  const character = cell.getValue() ?? '';
+  visitedCellHashs.add(cell.getHash());
+
+  node = node.children.get(character) ?? new TrieNode();
+  word += character;
+
+  if (node.isEndOfWord) {
+    foundWords.add(word);
+  }
+
+  for (const neighbourCell of cell.getNeighbours()) {
+    depthFirstSearch(neighbourCell, node, word, visitedCellHashs, foundWords);
+  }
+
+  visitedCellHashs.delete(cell.getHash());
+};
+
+function findWords(board: string[][], words: string[]): string[] {
+  const prefixTree = new Trie(words);
+  const foundWords = new Set<string>();
+  const visitedCellHashs = new Set<string>();
 
   const ROW_LENGTH = board.length;
   const COLUMN_LENGTH = board[0].length;
-  const foundWords = new Set<string>();
-  const visitedCells = new Set<string>();
-
-  function depthFirstSearch(
-    row: number,
-    column: number,
-    node: TrieNode,
-    word: string
-  ) {
-    const cell = new Cell(row, column);
-    if (
-      row < 0 ||
-      column < 0 ||
-      row === ROW_LENGTH ||
-      column === COLUMN_LENGTH ||
-      visitedCells.has(cell.getHash())
-    ) {
-      return false;
-    }
-
-    const character = board[row][column];
-    if (!node.children.has(character)) {
-      return false;
-    }
-
-    visitedCells.add(cell.getHash());
-
-    node = node.children.get(character) ?? new TrieNode();
-    word += character;
-
-    if (node.isEndOfWord) {
-      foundWords.add(word);
-    }
-
-    depthFirstSearch(row - 1, column, node, word);
-    depthFirstSearch(row + 1, column, node, word);
-    depthFirstSearch(row, column - 1, node, word);
-    depthFirstSearch(row, column + 1, node, word);
-
-    visitedCells.delete(cell.getHash());
-  }
 
   for (let row = 0; row < ROW_LENGTH; row++) {
     for (let column = 0; column < COLUMN_LENGTH; column++) {
-      depthFirstSearch(row, column, prefixTree.rootNode, '');
+      depthFirstSearch(
+        new Cell(row, column, board),
+        prefixTree.rootNode,
+        '',
+        visitedCellHashs,
+        foundWords
+      );
     }
   }
 
