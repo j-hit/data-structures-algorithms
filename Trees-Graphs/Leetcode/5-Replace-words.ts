@@ -44,8 +44,11 @@ export class TrieNode {
 export class Trie {
   private rootNode: TrieNode;
 
-  constructor() {
+  constructor(words: string[]) {
     this.rootNode = new TrieNode();
+    for (const word of words) {
+      this.insert(word);
+    }
   }
 
   insert(word: string): void {
@@ -74,13 +77,13 @@ export class Trie {
   }
 }
 
-function replaceWordsWithShortesWordsInPrefixTree(
-  words: string[],
-  prefixTree: Trie
+function replaceWordSuccessorsWithRoots(
+  successors: string[],
+  rootWords: Trie
 ): string[] {
   const replacedWords: string[] = [];
 
-  for (const word of words) {
+  for (const word of successors) {
     let foundReplacement = false;
     for (
       let endCharacterIndex = 1;
@@ -89,7 +92,7 @@ function replaceWordsWithShortesWordsInPrefixTree(
     ) {
       let partOfWord = word.substring(0, endCharacterIndex);
 
-      if (prefixTree.search(partOfWord)) {
+      if (rootWords.search(partOfWord)) {
         foundReplacement = true;
         replacedWords.push(partOfWord);
       }
@@ -103,13 +106,9 @@ function replaceWordsWithShortesWordsInPrefixTree(
 }
 
 function replaceWords(dictionary: string[], sentence: string): string {
-  const prefixTree = new Trie();
-  for (const word of dictionary) {
-    prefixTree.insert(word);
-  }
-
+  const prefixTree = new Trie(dictionary);
   const words = sentence.split(' ');
-  return replaceWordsWithShortesWordsInPrefixTree(words, prefixTree).join(' ');
+  return replaceWordSuccessorsWithRoots(words, prefixTree).join(' ');
 }
 
 console.log(
