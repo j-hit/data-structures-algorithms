@@ -63,17 +63,23 @@ export class Trie {
     currentNode.isEndOfWord = true;
   }
 
-  search(word: string): boolean {
+  findShortestMatch(word: string): string {
     let currentNode = this.rootNode;
+    let charactersOfNewWord = [];
 
     for (const character of word) {
       if (!currentNode.children.has(character)) {
-        return false;
+        return word;
       }
       currentNode = currentNode.children.get(character) ?? new TrieNode();
+      charactersOfNewWord.push(character);
+
+      if (currentNode.isEndOfWord) {
+        return charactersOfNewWord.join('');
+      }
     }
 
-    return currentNode.isEndOfWord;
+    return word;
   }
 }
 
@@ -84,22 +90,7 @@ function replaceWordSuccessorsWithRoots(
   const replacedWords: string[] = [];
 
   for (const word of successors) {
-    let foundReplacement = false;
-    for (
-      let endCharacterIndex = 1;
-      endCharacterIndex < word.length && !foundReplacement;
-      endCharacterIndex++
-    ) {
-      let partOfWord = word.substring(0, endCharacterIndex);
-
-      if (rootWords.search(partOfWord)) {
-        foundReplacement = true;
-        replacedWords.push(partOfWord);
-      }
-    }
-    if (!foundReplacement) {
-      replacedWords.push(word);
-    }
+    replacedWords.push(rootWords.findShortestMatch(word));
   }
 
   return replacedWords;
