@@ -27,19 +27,11 @@ function maxSubArray(nums: number[]): number {
   }
 
   let largestSum = nums[0];
-  let subTotal = nums[0] > 0 ? nums[0] : 0;
+  let subTotal = nums[0];
 
   for (let index = 1; index < nums.length; index++) {
-    if (nums[index] > largestSum) {
-      largestSum = nums[index];
-    }
-
-    subTotal += nums[index];
-    if (subTotal < 0) {
-      subTotal = 0;
-    } else if (subTotal > largestSum) {
-      largestSum = subTotal;
-    }
+    subTotal = Math.max(subTotal + nums[index], nums[index]);
+    largestSum = Math.max(largestSum, subTotal);
   }
 
   return largestSum;
