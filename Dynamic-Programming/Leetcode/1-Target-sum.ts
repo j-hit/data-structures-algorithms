@@ -10,7 +10,7 @@ const createHashForIndexTotalPair = (
 
 // Solution based on https://www.youtube.com/watch?v=g0npyaQtAQM&list=PLot-Xpze53lcvx_tjrr_m2lgD2NsRHlNO
 export function findTargetSumWays(nums: number[], target: number): number {
-  const indexTotalToNumberOfWaysMap = new Map<IndexTotalHash, number>();
+  const indexTotalToNumberOfWaysCache = new Map<IndexTotalHash, number>();
 
   const backtrack = (index: number, total: number): number => {
     const FOUND_WAY = 1;
@@ -21,8 +21,8 @@ export function findTargetSumWays(nums: number[], target: number): number {
     }
 
     const hashForIndexTotalPair = createHashForIndexTotalPair(index, total);
-    if (indexTotalToNumberOfWaysMap.has(hashForIndexTotalPair)) {
-      return indexTotalToNumberOfWaysMap.get(hashForIndexTotalPair) ?? 0;
+    if (indexTotalToNumberOfWaysCache.has(hashForIndexTotalPair)) {
+      return indexTotalToNumberOfWaysCache.get(hashForIndexTotalPair) ?? 0;
     }
 
     const numberOfWaysWithAddingNextValue = backtrack(
@@ -36,7 +36,7 @@ export function findTargetSumWays(nums: number[], target: number): number {
     const totalNumberOfWaysFromHere =
       numberOfWaysWithAddingNextValue + numberOfWaysWithSubtractingNextValue;
 
-    indexTotalToNumberOfWaysMap.set(
+    indexTotalToNumberOfWaysCache.set(
       hashForIndexTotalPair,
       totalNumberOfWaysFromHere
     );
