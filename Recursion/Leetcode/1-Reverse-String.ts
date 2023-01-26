@@ -43,10 +43,7 @@ const recursivelyReverse = (
     return;
   }
 
-  let first = s[startIndex];
-  let last = s[endIndex];
-  s[startIndex] = last;
-  s[endIndex] = first;
+  [s[startIndex], s[endIndex]] = [s[endIndex], s[startIndex]];
 
   recursivelyReverse(s, startIndex + 1, endIndex - 1);
 };
