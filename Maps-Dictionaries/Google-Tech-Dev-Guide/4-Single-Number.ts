@@ -29,8 +29,8 @@
  * HashSet - only value remaining
  * Time O(N) | Space O(N)
  */
-function singleNumber(nums: number[]): number {
-  const singleNumberSet = new Set();
+function singleNumber(nums: number[]): number | undefined {
+  const singleNumberSet = new Set<number>();
   /* Time O(N) */
   for (const numberToCheck of nums) {
     if (singleNumberSet.has(numberToCheck)) {
